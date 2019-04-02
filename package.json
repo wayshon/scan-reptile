@@ -1,0 +1,25 @@
+{
+  "name": "scan-reptile",
+  "version": "1.0.0",
+  "description": "scan server side",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wayshon/scan-reptile.git"
+  },
+  "author": "wayshon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wayshon/scan-reptile/issues"
+  },
+  "homepage": "https://github.com/wayshon/scan-reptile#readme",
+  "dependencies": {
+    "cheerio": "1.0.0-rc.2",
+    "superagent": "5.0.2",
+    "superagent-charset": "1.2.0"
+  }
+}
