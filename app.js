@@ -38,13 +38,19 @@ app.use(index.routes(), index.allowedMethods())
 // tasks.wallpaperTask();
 // tasks.foodTask();
 
-tasks.scheduleGameTask();
-tasks.scheduleWallpaperTask();
-tasks.scheduleFoodTask()
+// tasks.scheduleGameTask();
+// tasks.scheduleWallpaperTask();
+// tasks.scheduleFoodTask()
 
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
 });
+
+
+const test = require('./test')
+test();
+
+
 
 module.exports = app
