@@ -47,6 +47,7 @@ const fetchHome = async (url) => {
  * 获取详情页面的数据
  */
 const fetchDetail = async (url) => {
+    console.log(url)
 	return new Promise((resolve, reject) => {
         superagent
             .get(`${_Host}${url}`)
@@ -107,7 +108,7 @@ const parseImages = async (url) => {
  * 核心业务
  * 解析数据
  */
-const parseData = async () => {
+const gameTask = async () => {
 	let resText;
 	try {
 		resText = await fetchHome(_Game);
@@ -158,12 +159,11 @@ const parseData = async () => {
 	}
 
 	fs.writeFile(folder + '/game.json', JSON.stringify({
-	    status: 0,
-	    list: list
+	    data: list
 	}), function (err) {
 	    if (err) throw err;
 	    console.log('写入完成');
     });
 };
 
-module.exports = parseData;
+module.exports = gameTask;
