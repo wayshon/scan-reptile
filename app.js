@@ -35,7 +35,12 @@ app.use(async (ctx, next) => {
 app.use(index.routes(), index.allowedMethods())
 
 // tasks.gameTask();
+// tasks.wallpaperTask();
+// tasks.foodTask();
+
 tasks.scheduleGameTask();
+tasks.scheduleWallpaperTask();
+tasks.scheduleFoodTask()
 
 // error-handling
 app.on('error', (err, ctx) => {
