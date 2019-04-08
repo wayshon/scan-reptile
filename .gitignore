@@ -56,7 +56,5 @@ typings/
 # dotenv environment variables file
 .env
 
-jsonfile/result.json
-Feedback/
-
 reptileData/
+config/

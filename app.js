@@ -37,10 +37,12 @@ app.use(index.routes(), index.allowedMethods())
 // tasks.gameTask();
 // tasks.wallpaperTask();
 // tasks.foodTask();
+// tasks.plantTask();
 
 // tasks.scheduleGameTask();
 // tasks.scheduleWallpaperTask();
 // tasks.scheduleFoodTask()
+// tasks.schedulePlantTask()
 
 // error-handling
 app.on('error', (err, ctx) => {
@@ -48,8 +50,8 @@ app.on('error', (err, ctx) => {
 });
 
 
-const test = require('./test')
-test();
+// const test = require('./test')
+// test();
 
 
 

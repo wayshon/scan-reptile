@@ -16,7 +16,7 @@ superagent.buffer['text/html'] = true;
 // 根路径
 const _Host = 'https://www.2717.com';
 // 游戏原画
-const _Game = '/game/youxijietu/';
+const _Plant = '/zhiwu/';
 
 /**
  * 发请求，获取首页数据
@@ -116,72 +116,10 @@ const parseImages = async (url) => {
  * 核心业务
  * 解析数据
  */
-// const gameTask = async () => {
-// 	let resText;
-// 	try {
-// 		resText = await fetchHome(_Game);
-// 	} catch (e) {
-// 		console.log(e);
-// 		return;
-//     }
-
-// 	// 解析数据
-// 	const $ = cheerio.load(resText);
-
-//     let list = [], promiseList = [];
-
-// 	$('ul.pic_list li').each((i, elem) => {
-// 		const _this = $(elem);
-// 		let item = {
-// 			title: _this.find('span').text(),
-//             img: _this.find('img').attr('src'),
-//             images: []
-//         }
-
-//         let p = new Promise(async (resolve, reject) => {
-//             const href = _this.find('a').attr('href');
-//             if (href) {
-//                 item.images = await parseImages(href);
-//                 list.push(item)
-//                 resolve()
-//             } else {
-//                 list.push(item)
-//                 resolve()
-//             }
-//         })
-
-//         promiseList.push(p)
-//     });
-
-//     await Promise.all(promiseList);
-
-// 	// 生成数据
-// 	// 写入数据, 文件不存在会自动创建
-//     const reptileDataFolder = path.join(__dirname, '../reptileData');
-// 	if (!fs.existsSync(reptileDataFolder)) {
-// 	    fs.mkdirSync(reptileDataFolder);
-//     }
-//     const folder = path.join(reptileDataFolder, 'game');
-// 	if (!fs.existsSync(folder)) {
-// 	    fs.mkdirSync(folder);
-// 	}
-
-// 	fs.writeFile(folder + '/game.json', JSON.stringify({
-// 	    data: list
-// 	}), function (err) {
-// 	    if (err) throw err;
-// 	    console.log('写入完成');
-//     });
-// };
-
-/**
- * 核心业务
- * 解析数据
- */
-const gameTask = async () => {
+const plantTask = async () => {
 	let resText;
 	try {
-		resText = await fetchHome(_Game);
+		resText = await fetchHome(_Plant);
 	} catch (e) {
 		console.log(e);
 		return;
@@ -221,7 +159,7 @@ const gameTask = async () => {
 		});
 	};
 
-	insert($('ul.pic_list li'));
+	insert($('ul.Zw_PicList li'));
 
 	const parseNext = async (url) => {
 		let resText;
@@ -232,7 +170,7 @@ const gameTask = async () => {
 			return;
 		}
 
-		insert($('ul.pic_list li'));
+		insert($('ul.Zw_PicList li'));
 	};
 
 	const last = $('div.NewPages a').last();
@@ -250,7 +188,7 @@ const gameTask = async () => {
 		if (allPages && path) {
 			let i = 2;
 			while (i < allPages) {
-				let url = `${_Game}${path}_${i}.html`;
+				let url = `${_Plant}${path}_${i}.html`;
 				try {
 					await parseNext(url);
 				} catch (e) {
@@ -272,13 +210,13 @@ const gameTask = async () => {
 		if (!fs.existsSync(reptileDataFolder)) {
 			fs.mkdirSync(reptileDataFolder);
 		}
-		const folder = path.join(reptileDataFolder, 'game');
+		const folder = path.join(reptileDataFolder, 'plant');
 		if (!fs.existsSync(folder)) {
 			fs.mkdirSync(folder);
 		}
 
 		fs.writeFile(
-			folder + '/game.json',
+			folder + '/plant.json',
 			JSON.stringify({
 				data: list
 			}),
@@ -292,4 +230,4 @@ const gameTask = async () => {
 	}
 };
 
-module.exports = gameTask;
+module.exports = plantTask;
