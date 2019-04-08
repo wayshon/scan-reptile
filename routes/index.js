@@ -2,9 +2,19 @@ const path = require('path');
 const fs = require('fs');
 const router = require('koa-router')();
 
-const gamePath = path.join(__dirname, '../reptileData/game/game.json');
-const wallpaperPath = path.join(__dirname, '../reptileData/wallpaper/wallpaper.json');
-const foodPath = path.join(__dirname, '../reptileData/food/food.json');
+const GameModel = require('../model/game');
+
+const modelPromise = (Model, ...params) => {
+	return new Promise((resolve, reject) => {
+		Model.find(...params, (err, res) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(res);
+			}
+		});
+	})
+}
 
 router.get('/', async (ctx, next) => {
 	await ctx.render('index', {
@@ -13,57 +23,58 @@ router.get('/', async (ctx, next) => {
 });
 
 router.get('/game', async (ctx, next) => {
+	const currentPage = ctx.query.currentPage ? +ctx.query.currentPage : 1;
+	const pageSize = ctx.query.pageSize ? +ctx.query.pageSize : 20;
+	const count = (currentPage - 1) * pageSize;
+
 	try {
-		const jsonFile = fs.readFileSync(gamePath);
-	    const result = JSON.parse(jsonFile);
-		if (result && Array.isArray(result.data) && result.data.length > 0) {
-            ctx.body = {
-				code: 200,
-				data: result.data
-            };
-		} else {
-			throw new TypeError('result error');
-		}
+		const res = await modelPromise(GameModel, {}, null, { limit: pageSize, skip: count });
+		ctx.body = {
+			code: 200,
+			data: res
+		};
 	} catch (e) {
-		console.log(e);
 		ctx.throw(500);
 	}
 });
 
 router.get('/wallpaper', async (ctx, next) => {
-	try {
-		const jsonFile = fs.readFileSync(wallpaperPath);
-	    const result = JSON.parse(jsonFile);
-		if (result && Array.isArray(result.data) && result.data.length > 0) {
-            ctx.body = {
+	GameModel.find({}, (err, res) => {
+		if (err) {
+			ctx.throw(500);
+		} else if (res) {
+			ctx.body = {
 				code: 200,
-				data: result.data
-            };
-		} else {
-			throw new TypeError('result error');
+				data: res
+			};
 		}
-	} catch (e) {
-		console.log(e);
-		ctx.throw(500);
-	}
+	});
 });
 
 router.get('/food', async (ctx, next) => {
-	try {
-		const jsonFile = fs.readFileSync(foodPath);
-	    const result = JSON.parse(jsonFile);
-		if (result && Array.isArray(result.data) && result.data.length > 0) {
-            ctx.body = {
+	GameModel.find({}, (err, res) => {
+		if (err) {
+			ctx.throw(500);
+		} else if (res) {
+			ctx.body = {
 				code: 200,
-				data: result.data
-            };
-		} else {
-			throw new TypeError('result error');
+				data: res
+			};
 		}
-	} catch (e) {
-		console.log(e);
-		ctx.throw(500);
-	}
+	});
+});
+
+router.get('/plant', async (ctx, next) => {
+	GameModel.find({}, (err, res) => {
+		if (err) {
+			ctx.throw(500);
+		} else if (res) {
+			ctx.body = {
+				code: 200,
+				data: res
+			};
+		}
+	});
 });
 
 module.exports = router;

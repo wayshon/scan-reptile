@@ -7,6 +7,8 @@ const path = require('path');
 const superagent = require('superagent');
 const cheerio = require('cheerio');
 const charset = require('superagent-charset');
+const GameModel = require('../model/game');
+
 charset(superagent); //设置字符
 superagent.buffer['text/html'] = true;
 /**
@@ -47,7 +49,6 @@ const fetchHome = async (url) => {
  * 获取详情页面的数据
  */
 const fetchDetail = async (url) => {
-	console.log(url);
 	return new Promise((resolve, reject) => {
 		superagent
 			.get(`${_Host}${url}`)
@@ -113,66 +114,19 @@ const parseImages = async (url) => {
 };
 
 /**
- * 核心业务
- * 解析数据
+ * 插入mongodb
  */
-// const gameTask = async () => {
-// 	let resText;
-// 	try {
-// 		resText = await fetchHome(_Game);
-// 	} catch (e) {
-// 		console.log(e);
-// 		return;
-//     }
-
-// 	// 解析数据
-// 	const $ = cheerio.load(resText);
-
-//     let list = [], promiseList = [];
-
-// 	$('ul.pic_list li').each((i, elem) => {
-// 		const _this = $(elem);
-// 		let item = {
-// 			title: _this.find('span').text(),
-//             img: _this.find('img').attr('src'),
-//             images: []
-//         }
-
-//         let p = new Promise(async (resolve, reject) => {
-//             const href = _this.find('a').attr('href');
-//             if (href) {
-//                 item.images = await parseImages(href);
-//                 list.push(item)
-//                 resolve()
-//             } else {
-//                 list.push(item)
-//                 resolve()
-//             }
-//         })
-
-//         promiseList.push(p)
-//     });
-
-//     await Promise.all(promiseList);
-
-// 	// 生成数据
-// 	// 写入数据, 文件不存在会自动创建
-//     const reptileDataFolder = path.join(__dirname, '../reptileData');
-// 	if (!fs.existsSync(reptileDataFolder)) {
-// 	    fs.mkdirSync(reptileDataFolder);
-//     }
-//     const folder = path.join(reptileDataFolder, 'game');
-// 	if (!fs.existsSync(folder)) {
-// 	    fs.mkdirSync(folder);
-// 	}
-
-// 	fs.writeFile(folder + '/game.json', JSON.stringify({
-// 	    data: list
-// 	}), function (err) {
-// 	    if (err) throw err;
-// 	    console.log('写入完成');
-//     });
-// };
+const insertMongo = (data) => {
+	let game = new GameModel(data);
+	game.save((err, res) => {
+		if (err) {
+			console.log('insert fail');
+		}
+		if (res) {
+			console.log('insert ok _id : ', res._id);
+		}
+	});
+};
 
 /**
  * 核心业务
@@ -189,9 +143,6 @@ const gameTask = async () => {
 
 	const $ = cheerio.load(resText);
 
-	let list = [],
-		promiseList = [];
-
 	const insert = async (lis) => {
 		lis.each((i, elem) => {
 			const _this = $(elem);
@@ -201,23 +152,12 @@ const gameTask = async () => {
 				images: []
 			};
 
-			let p = new Promise(async (resolve, reject) => {
-				const href = _this.find('a').attr('href');
-				if (href) {
-					try {
-						item.images = await parseImages(href);
-					} catch (e) {
-						console.log(e);
-					}
-					list.push(item);
-					resolve();
-				} else {
-					list.push(item);
-					resolve();
-				}
-			});
-
-			promiseList.push(p);
+			const href = _this.find('a').attr('href');
+			if (href) {
+				parseImages(href).then(images => item.images = images).catch(e => console.log(e)).then(() => insertMongo(item));
+			} else {
+				insertMongo(item);
+			}			
 		});
 	};
 
@@ -259,36 +199,6 @@ const gameTask = async () => {
 				i++;
 			}
 		}
-	}
-
-	console.log('promiseList length =============  ', promiseList.length);
-
-	try {
-		await Promise.all(promiseList);
-
-		// 生成数据
-		// 写入数据, 文件不存在会自动创建
-		const reptileDataFolder = path.join(__dirname, '../reptileData');
-		if (!fs.existsSync(reptileDataFolder)) {
-			fs.mkdirSync(reptileDataFolder);
-		}
-		const folder = path.join(reptileDataFolder, 'game');
-		if (!fs.existsSync(folder)) {
-			fs.mkdirSync(folder);
-		}
-
-		fs.writeFile(
-			folder + '/game.json',
-			JSON.stringify({
-				data: list
-			}),
-			function(err) {
-				if (err) throw err;
-				console.log('写入完成');
-			}
-		);
-	} catch (e) {
-		console.log(e);
 	}
 };
 
