@@ -7,7 +7,11 @@
     "start": "node bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www",
     "prd": "pm2 start bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pm2:1": "NODE_ENV=prod PORT=11001 pm2 start ./bin/www --name=scan1",
+    "pm2:2": "NODE_ENV=prod PORT=11002 pm2 start ./bin/www --name=scan2",
+    "pm2:3": "NODE_ENV=prod PORT=11003 pm2 start ./bin/www --name=scan3",
+    "pm2": "npm run pm2:1 && npm run pm2:2 && npm run pm2:3"
   },
   "repository": {
     "type": "git",
