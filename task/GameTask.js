@@ -2,8 +2,6 @@
  * 获取依赖
  * @type {*}
  */
-const fs = require('fs');
-const path = require('path');
 const superagent = require('superagent');
 const cheerio = require('cheerio');
 const charset = require('superagent-charset');
