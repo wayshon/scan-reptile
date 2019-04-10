@@ -75,7 +75,7 @@ const parseImages = async (url) => {
 	let paths = url.split('/');
 	paths.pop();
 	const path = paths.join('/');
-	let results = [], nextPath = url;
+	let results = [];
 
 	const parse = async (url) => {
 		if (!url) return;
@@ -87,31 +87,26 @@ const parseImages = async (url) => {
 		}
 		const $ = cheerio.load(resText);
 
-		const src = $('#picBody img').attr('src'),
-              nextHref = $('#picBody a').attr('href');
-        
-        return {
-            src,
-            nextHref
-        }
+		const src = $('#picBody img').attr('src');
+		if (src) {
+			results.push(src);
+		}
+
+		const href = $('#picBody a').attr('href');
+		if (href && !/\//.test(href)) {
+			try {
+				await parse(`${path}/${href}`);
+			} catch (e) {
+				console.log(e);
+			}
+		}
 	};
 
 	try {
-        while (nextPath) {
-            const res = await parse(url);
-            if (!res) {
-                nextPath = undefined;
-            } else {
-                let { src, nextHref } = res;
-                if (src) {
-                    results.push(src);
-                }
-                nextPath = !/\//.test(nextHref) ? `${path}/${nextHref}` : undefined;
-            }
-        }
+		await parse(url);
 	} catch (e) {
 		console.log(e);
-    }
+	}
 
 	return results;
 };
@@ -147,24 +142,37 @@ const girlTask = async () => {
 	const $ = cheerio.load(resText);
 
 	const insert = async (lis) => {
-		lis.each((i, elem) => {
+		let array = [];
+		lis.each(async (i, elem) => {
 			const _this = $(elem);
 			let item = {
 				title: _this.find('span').text(),
 				img: _this.find('img').attr('src'),
-				images: []
+				href: _this.find('a').attr('href')
 			};
+			array.push(item);
+		});
 
-			const href = _this.find('a').attr('href');
-			if (href) {
-				parseImages(href).then(images => item.images = images).catch(e => console.log(e)).then(() => insertMongo(item));
+		for (let v of array) {
+			let item = {
+				title: v.title,
+				img: v.img,
+				images: []
+			}
+			if (v.href) {
+				try {
+					item.images = await parseImages(v.href);
+				} catch (e) {
+
+				}
+				insertMongo(item)
 			} else {
 				insertMongo(item);
             }
-		});
+		}
 	};
 
-	insert($('div.MeinvTuPianBox li'));
+	await insert($('div.MeinvTuPianBox li'));
 
 	const parseNext = async (url) => {
 		let resText;
