@@ -3,6 +3,7 @@ const gameTask = require('./GameTask');
 const wallpaperTask = require('./WallpaperTask');
 const foodTask = require('./FoodTask');
 const plantTask = require('./PlantTask');
+const girlTask = require('./GirlTask');
 
 const scheduleGameTask = () => {
     // 每 周1 的 3 时 1 分 1 秒触发
@@ -48,6 +49,17 @@ const schedulePlantTask = () => {
     });
 }
 
+const scheduleGirlTask = () => {
+    // 每 周5 的 3 时 1 分 1 秒触发
+    schedule.scheduleJob('1 1 3 * * 5', function () {
+        try {
+            girlTask()
+        } catch (e) {
+            console.log(e)
+        }
+    });
+}
+
 module.exports = {
     gameTask,
     scheduleGameTask,
@@ -56,5 +68,7 @@ module.exports = {
     foodTask,
     scheduleFoodTask,
     plantTask,
-    schedulePlantTask
+    schedulePlantTask,
+    girlTask,
+    scheduleGirlTask
 };

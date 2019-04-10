@@ -38,6 +38,7 @@ app.use(index.routes(), index.allowedMethods())
 // tasks.wallpaperTask();
 // tasks.foodTask();
 // tasks.plantTask();
+// tasks.girlTask();
 
 // tasks.scheduleGameTask();
 // tasks.scheduleWallpaperTask();
