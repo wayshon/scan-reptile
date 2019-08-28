@@ -8,7 +8,7 @@ const logger = require('koa-logger')
 
 const index = require('./routes/index')
 
-const tasks = require('./task/tasks')
+// const tasks = require('./task/tasks')
 
 // error handler
 onerror(app)
@@ -34,11 +34,14 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods())
 
+const foodDemo = require('./task/FoodDemo');
+foodDemo()
+
 // tasks.gameTask();
 // tasks.wallpaperTask();
 // tasks.foodTask();
 // tasks.plantTask();
-tasks.girlTask();
+// tasks.girlTask();
 
 // tasks.scheduleGameTask();
 // tasks.scheduleWallpaperTask();
