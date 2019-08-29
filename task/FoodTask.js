@@ -5,7 +5,7 @@
 const superagent = require('superagent');
 const cheerio = require('cheerio');
 const charset = require('superagent-charset');
-const FoodModel = require('../model/food');
+// const FoodModel = require('../model/food');
 
 charset(superagent); //设置字符
 superagent.buffer['text/html'] = true;
@@ -107,15 +107,15 @@ const parseImages = async (url) => {
  * 插入mongodb
  */
 const insertMongo = (data) => {
-	let food = new FoodModel(data);
-	food.save((err, res) => {
-		if (err) {
-			console.log('insert fail');
-		}
-		if (res) {
-			console.log('insert ok _id : ', res._id);
-		}
-	});
+	// let food = new FoodModel(data);
+	// food.save((err, res) => {
+	// 	if (err) {
+	// 		console.log('insert fail');
+	// 	}
+	// 	if (res) {
+	// 		console.log('insert ok _id : ', res._id);
+	// 	}
+	// });
 };
 
 /**
@@ -130,7 +130,7 @@ const foodTask = async () => {
 		console.log(e);
 		return;
 	}
-
+	console.log(resText)
 	const $ = cheerio.load(resText);
 
 	/**

@@ -34,8 +34,9 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods())
 
-const foodDemo = require('./task/FoodDemo');
-foodDemo()
+const foodTask = require('./task/FoodDemo');
+// const foodTask = require('./task/foodTask');
+foodTask()
 
 // tasks.gameTask();
 // tasks.wallpaperTask();
